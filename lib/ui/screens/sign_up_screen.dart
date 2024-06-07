@@ -29,7 +29,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(
-                  height: 100,
+                  height: 80,
                 ),
                 Text('Get Started With',
                     style: Theme.of(context).textTheme.titleLarge),
@@ -113,14 +113,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 text: "Have an account ",
                 children: [
                   TextSpan(
+                    text: "Sign In",
                     style: TextStyle(
                       color: AppColors.themeColor,
                     ),
-                    text: "Sign In",
+                       recognizer: TapGestureRecognizer()
+                  ..onTap = _onTapBackToSignInScreen,
                   ),
                 ],
-                recognizer: TapGestureRecognizer()
-                  ..onTap = _onTapBackToSignInScreen),
+             
+                  
+                  ),
           ),
         ],
       ),

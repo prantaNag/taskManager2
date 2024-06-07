@@ -69,22 +69,23 @@ class _SignInScreenState extends State<SignInScreen> {
                       ),
                       RichText(
                         text: TextSpan(
-                            style: TextStyle(
-                              color: Colors.black.withOpacity(0.8),
-                              fontWeight: FontWeight.w400,
-                              letterSpacing: 0.5,
-                            ),
-                            text: "Don't have an account? ",
-                            children: [
-                              TextSpan(
-                                style: TextStyle(
-                                  color: AppColors.themeColor,
-                                ),
-                                text: "Sign Up",
+                          style: TextStyle(
+                            color: Colors.black.withOpacity(0.8),
+                            fontWeight: FontWeight.w400,
+                            letterSpacing: 0.5,
+                          ),
+                          text: "Don't have an account? ",
+                          children: [
+                            TextSpan(
+                              text: "Sign Up",
+                              style: TextStyle(
+                                color: AppColors.themeColor,
                               ),
-                            ],
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = _onTapSignUpPage),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = _onTapSignUpPage,
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
@@ -101,7 +102,7 @@ class _SignInScreenState extends State<SignInScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => SignUpScreen(),
+        builder: (context) => const SignUpScreen(),
       ),
     );
   }
@@ -110,7 +111,7 @@ class _SignInScreenState extends State<SignInScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => EmailVerificationScreen(),
+        builder: (context) => const EmailVerificationScreen(),
       ),
     );
   }

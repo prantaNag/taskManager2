@@ -1,21 +1,22 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:taskmanager/ui/screens/pin_verification_screen.dart';
+import 'package:taskmanager/ui/screens/sign_in_screen.dart';
 
 import 'package:taskmanager/ui/utility/app_colors.dart';
 import 'package:taskmanager/ui/widgets/background_widget.dart';
 
-class EmailVerificationScreen extends StatefulWidget {
-  const EmailVerificationScreen({super.key});
+class ResetPasswordScreen extends StatefulWidget {
+  const ResetPasswordScreen({super.key});
 
   @override
-  State<EmailVerificationScreen> createState() =>
-      _EmailVerificationScreenState();
+  State<ResetPasswordScreen> createState() => _ResetPasswordScreenState();
 }
 
-class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
-  final TextEditingController _emailTEController = TextEditingController();
-
+class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
+  final TextEditingController _passwordTEController = TextEditingController();
+  final TextEditingController _confirmPasswordTEController =
+      TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,27 +31,37 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                 const SizedBox(
                   height: 100,
                 ),
-                Text('Your Email Address',
+                Text('Set Passsword',
                     style: Theme.of(context).textTheme.titleLarge),
                 Text(
-                    'A 6 digit verification pin will be sent your email address ',
+                    'Minimum length of password should be more than 6 letters and combination of number & letter ',
                     style: Theme.of(context).textTheme.titleSmall),
                 const SizedBox(
                   height: 24,
                 ),
                 TextFormField(
-                  keyboardType: TextInputType.emailAddress,
-                  controller: _emailTEController,
+                  keyboardType: TextInputType.text,
+                  controller: _passwordTEController,
                   decoration: InputDecoration(
-                    hintText: 'Email',
+                    hintText: 'Password',
                   ),
                 ),
                 const SizedBox(
-                  height: 14,
+                  height: 8,
+                ),
+                TextFormField(
+                  keyboardType: TextInputType.text,
+                  controller: _confirmPasswordTEController,
+                  decoration: InputDecoration(
+                    hintText: 'Confirm Password',
+                  ),
+                ),
+                const SizedBox(
+                  height: 16,
                 ),
                 ElevatedButton(
-                  onPressed: _onTapConfirmButton,
-                  child: const Icon(Icons.arrow_circle_right),
+                  onPressed: _onTapSignInPage,
+                  child: Text("Done"),
                 ),
                 const SizedBox(
                   height: 36,
@@ -89,7 +100,13 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
   }
 
   void _onTapSignInPage() {
-    Navigator.pop(context);
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const SignInScreen(),
+      ),
+      (route) => false,
+    );
   }
 
   void _onTapConfirmButton() {
@@ -103,7 +120,8 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
 
   @override
   void dispose() {
-    _emailTEController.dispose();
+    _passwordTEController.dispose();
+    _confirmPasswordTEController.dispose();
 
     super.dispose();
   }
