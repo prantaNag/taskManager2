@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:taskmanager/ui/screens/second%20screen%20part/main_bottom_nav_screen.dart';
 import 'package:taskmanager/ui/screens/sign_up_screen.dart';
 import 'package:taskmanager/ui/utility/app_colors.dart';
 import 'package:taskmanager/ui/widgets/background_widget.dart';
@@ -54,7 +55,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   height: 16,
                 ),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: _onTapNextScreen,
                   child: const Icon(Icons.arrow_circle_right),
                 ),
                 const SizedBox(
@@ -95,6 +96,15 @@ class _SignInScreenState extends State<SignInScreen> {
           ),
         ),
       )),
+    );
+  }
+
+  void _onTapNextScreen() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const MainBottomNavScreen(),
+      ),
     );
   }
 
