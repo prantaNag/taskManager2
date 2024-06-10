@@ -9,6 +9,7 @@ AppBar profileAppbar() {
       child: CircleAvatar(),
     ),
     title: const Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           'Mister Hulululu',

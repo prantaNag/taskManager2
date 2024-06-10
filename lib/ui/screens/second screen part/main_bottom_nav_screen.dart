@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:taskmanager/ui/screens/second%20screen%20part/add_button_screen.dart';
 import 'package:taskmanager/ui/screens/second%20screen%20part/cancled_task_screen.dart';
 import 'package:taskmanager/ui/screens/second%20screen%20part/completed_task_screen.dart';
 import 'package:taskmanager/ui/screens/second%20screen%20part/new_task_screen.dart';
@@ -56,6 +57,22 @@ class _MainBottomNavScreenState extends State<MainBottomNavScreen> {
             label: 'Cancled',
           ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _onTapAddButtonScreen,
+        child: Icon(
+          Icons.add,
+          color: Colors.redAccent,
+        ),
+      ),
+    );
+  }
+
+  void _onTapAddButtonScreen() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AddButtonScreen(),
       ),
     );
   }

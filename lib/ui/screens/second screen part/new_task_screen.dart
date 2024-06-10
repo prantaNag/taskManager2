@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:taskmanager/ui/widgets/body_list_card_menu.dart';
+//import 'package:flutter/widgets.dart';
 import 'package:taskmanager/ui/widgets/profile_appbar.dart';
 import 'package:taskmanager/ui/widgets/task_summary_card.dart';
 
@@ -15,8 +16,24 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: profileAppbar(),
-      body: Column(
-        children: [_buildSummerySection()],
+      body: Padding(
+        padding: const EdgeInsets.only(top: 8, right: 8, left: 8),
+        child: Column(
+          children: [
+            _buildSummerySection(),
+            const SizedBox(
+              height: 8,
+            ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: 5,
+                itemBuilder: (context, index) {
+                  return bodyListCardItem();
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
