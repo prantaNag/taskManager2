@@ -13,7 +13,7 @@ class _CompletedTaskScreenState extends State<CompletedTaskScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: profileAppbar(),
+      appBar: profileAppbar(context),
       body: Padding(
         padding: const EdgeInsets.only(top: 8, right: 8, left: 8),
         child: Expanded(

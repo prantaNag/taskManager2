@@ -17,7 +17,7 @@ class _AddButtonScreenState extends State<AddButtonScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: profileAppbar(),
+      appBar: profileAppbar(context),
       body: BackgroundWidget(
         child: SingleChildScrollView(
           child: Padding(
