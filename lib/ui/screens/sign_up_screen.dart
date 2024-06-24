@@ -51,7 +51,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   TextFormField(
                     keyboardType: TextInputType.emailAddress,
                     controller: _emailTEController,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       hintText: 'Email',
                     ),
                     validator: (String? value) {
@@ -70,7 +70,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                   TextFormField(
                     controller: _firstNameTEController,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       hintText: 'First Name',
                     ),
                     validator: (String? value) {
@@ -85,7 +85,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                   TextFormField(
                     controller: _lastNameTEController,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       hintText: 'Last Name',
                     ),
                     validator: (String? value) {
@@ -101,7 +101,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   TextFormField(
                     keyboardType: TextInputType.number,
                     controller: _mobileTEController,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       hintText: 'Mobile',
                     ),
                     validator: (String? value) {
@@ -183,7 +183,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               children: [
                 TextSpan(
                   text: "Sign In",
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: AppColors.themeColor,
                   ),
                   recognizer: TapGestureRecognizer()
