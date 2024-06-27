@@ -33,6 +33,7 @@ class AuthControler {
         user.toJson(),
       ),
     );
+    userdata = user;
   }
 
   static Future<UserModel?> getUserData() async {

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:taskmanager/ui/widgets/body_list_card_menu.dart';
+// import 'package:taskmanager/ui/widgets/body_list_card_menu.dart';
 import 'package:taskmanager/ui/widgets/profile_appbar.dart';
 
 class CancledTaskScreen extends StatefulWidget {
@@ -20,7 +20,7 @@ class _CancledTaskScreenState extends State<CancledTaskScreen> {
           child: ListView.builder(
             itemCount: 5,
             itemBuilder: (context, index) {
-              return bodyListCardItem();
+              //return const TaskItem();
             },
           ),
         ),

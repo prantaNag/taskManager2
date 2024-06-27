@@ -20,7 +20,7 @@ class _ProcessTaskScreenState extends State<ProcessTaskScreen> {
           child: ListView.builder(
             itemCount: 5,
             itemBuilder: (context, index) {
-              return bodyListCardItem();
+              return const TaskItem();
             },
           ),
         ),
