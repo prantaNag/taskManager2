@@ -2,14 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:taskmanager/ui/screens/splash_screen.dart';
 import 'package:taskmanager/ui/utility/app_colors.dart';
 
-class TaskManagerApp extends StatelessWidget {
+class TaskManagerApp extends StatefulWidget {
   const TaskManagerApp({super.key});
 
+  static GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
+  @override
+  State<TaskManagerApp> createState() => _TaskManagerAppState();
+}
+
+class _TaskManagerAppState extends State<TaskManagerApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: TaskManagerApp.navigatorKey,
       debugShowCheckedModeBanner: false,
-      home: SplashScreen(),
+      home: const SplashScreen(),
       theme: lightThemeData(),
     );
   }
@@ -20,11 +28,11 @@ class TaskManagerApp extends StatelessWidget {
         fillColor: Colors.white,
         hintStyle: TextStyle(color: Colors.grey.shade400),
         filled: true,
-        border: OutlineInputBorder(
+        border: const OutlineInputBorder(
           borderSide: BorderSide.none,
         ),
       ),
-      textTheme: TextTheme(
+      textTheme: const TextTheme(
         titleLarge: TextStyle(
           fontSize: 28,
           fontWeight: FontWeight.bold,
