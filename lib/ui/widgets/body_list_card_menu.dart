@@ -20,6 +20,7 @@ class TaskItem extends StatefulWidget {
 class _TaskItemState extends State<TaskItem> {
   bool _deleteTaskInPrograss = false;
   bool _editInPrograss = false;
+  String popupValue = '';
   String dropdownvalue = ' ';
   List<String> statusList = [
     'New',
@@ -27,6 +28,11 @@ class _TaskItemState extends State<TaskItem> {
     'Completed',
     'Canceled',
   ];
+  @override
+  void initState() {
+    super.initState();
+    popupValue = widget.taskModel.status!;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,8 +47,8 @@ class _TaskItemState extends State<TaskItem> {
             Text(widget.taskModel.description ?? ' '),
             Text(
               'Date: ${widget.taskModel.createdDate}',
-              style:
-                  TextStyle(color: Colors.amber, fontWeight: FontWeight.w500),
+              style: const TextStyle(
+                  color: Colors.amber, fontWeight: FontWeight.w500),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -52,7 +58,8 @@ class _TaskItemState extends State<TaskItem> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14),
                   ),
-                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                   backgroundColor: Colors.pinkAccent,
                 ),
                 ButtonBar(
@@ -65,7 +72,7 @@ class _TaskItemState extends State<TaskItem> {
                         onPressed: () {
                           _deleteTask();
                         },
-                        icon: Icon(Icons.delete),
+                        icon: const Icon(Icons.delete),
                       ),
                     ),
                     Visibility(
@@ -77,6 +84,7 @@ class _TaskItemState extends State<TaskItem> {
                           dropdownvalue = selectedValue;
                           if (mounted) {
                             setState(() {});
+                            _editTaskStatus();
                           }
                         },
                         itemBuilder: (BuildContext context) {
@@ -128,5 +136,28 @@ class _TaskItemState extends State<TaskItem> {
     if (mounted) {
       setState(() {});
     }
+  }
+
+  Future<void> _editTaskStatus() async {
+    _editInPrograss = true;
+    if (mounted) setState(() {});
+
+    NetworkResponse response = await NetworkCaller.getRequest(
+        Urls.updateTaskStatus(widget.taskModel.sId.toString(), popupValue));
+    if (response.inSuccess) {
+      widget.onUpdateTask();
+      if (mounted) {
+        showSnackBarMessage(context, 'Task Status Updated Successfully');
+      }
+    } else {
+      if (mounted) {
+        showSnackBarMessage(
+            context,
+            response.errorMessage?.toString() ??
+                'Failed to update Task Status! Try again');
+      }
+    }
+    _editInPrograss = false;
+    if (mounted) setState(() {});
   }
 }

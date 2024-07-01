@@ -1,96 +1,88 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:pin_code_fields/pin_code_fields.dart';
+import 'package:taskmanager/data/models/network_response.dart';
+import 'package:taskmanager/data/networkCaller/network_caller.dart';
+
+import 'package:taskmanager/data/utilities/urls.dart';
+
 import 'package:taskmanager/ui/screens/reset_password_screen.dart';
 import 'package:taskmanager/ui/screens/sign_in_screen.dart';
-
 import 'package:taskmanager/ui/utility/app_colors.dart';
 import 'package:taskmanager/ui/widgets/background_widget.dart';
-import 'package:pin_code_fields/pin_code_fields.dart';
+
+import 'package:taskmanager/ui/widgets/snackbar_message.dart';
 
 class PinVerificationScreen extends StatefulWidget {
-  const PinVerificationScreen({super.key});
+  const PinVerificationScreen({super.key, required this.userEmail});
+  final String userEmail;
 
   @override
   State<PinVerificationScreen> createState() => _PinVerificationScreenState();
 }
 
 class _PinVerificationScreenState extends State<PinVerificationScreen> {
-  final TextEditingController _pinTEController = TextEditingController();
+  final TextEditingController _pinTEcontroller = TextEditingController();
+  final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
+  bool _recoveryPinOTPInProcess = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: BackgroundWidget(
-          child: SafeArea(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(
-                  height: 100,
+        child: SafeArea(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Form(
+                key: _formkey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(
+                      height: 100,
+                    ),
+                    Text(
+                      'Pin Verifiactiom',
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                    const SizedBox(
+                      height: 8,
+                    ),
+                    Text(
+                      'Enter 6 digit pin',
+                      style: Theme.of(context).textTheme.titleSmall,
+                    ),
+                    const SizedBox(
+                      height: 24,
+                    ),
+                    _buildPinField(),
+                    const SizedBox(height: 16),
+                    Visibility(
+                      visible: _recoveryPinOTPInProcess == false,
+                      replacement: const CircularProgressIndicator(),
+                      child: ElevatedButton(
+                          onPressed: _onTapVerifyButton,
+                          child: const Text('Verify')),
+                    ),
+                    const SizedBox(
+                      height: 36,
+                    ),
+                    _buildSigninSection()
+                  ],
                 ),
-                Text('Pin Verification',
-                    style: Theme.of(context).textTheme.titleLarge),
-                Text(
-                    'A 6 digit verification pin has been sent your email address ',
-                    style: Theme.of(context).textTheme.titleSmall),
-                const SizedBox(
-                  height: 24,
-                ),
-                _buildPinCodeTextField(),
-                const SizedBox(
-                  height: 14,
-                ),
-                ElevatedButton(
-                  onPressed: _onTapResetPasswordScreen,
-                  child: Text("Verify"),
-                ),
-                const SizedBox(
-                  height: 36,
-                ),
-                _buildSignInSection(),
-              ],
+              ),
             ),
           ),
         ),
-      )),
-    );
-  }
-
-  Widget _buildSignInSection() {
-    return Center(
-      child: Column(
-        children: [
-          RichText(
-            text: TextSpan(
-                style: TextStyle(
-                  color: Colors.black.withOpacity(0.8),
-                  fontWeight: FontWeight.w400,
-                  letterSpacing: 0.5,
-                ),
-                text: "Have an account ",
-                children: [
-                  TextSpan(
-                    style: TextStyle(
-                      color: AppColors.themeColor,
-                    ),
-                    text: "Sign Up",
-                  ),
-                ],
-                recognizer: TapGestureRecognizer()..onTap = _onTapSignInPage),
-          ),
-        ],
       ),
     );
   }
 
-  Widget _buildPinCodeTextField() {
+  Widget _buildPinField() {
     return PinCodeTextField(
       length: 6,
+      obscureText: false,
       animationType: AnimationType.fade,
       pinTheme: PinTheme(
         shape: PinCodeFieldShape.box,
@@ -99,42 +91,85 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
         fieldWidth: 40,
         activeFillColor: Colors.white,
         selectedFillColor: Colors.white,
+        inactiveFillColor: Colors.white,
         selectedColor: AppColors.themeColor,
-        errorBorderColor: Colors.red,
-        inactiveColor: Colors.white,
       ),
-      animationDuration: Duration(milliseconds: 300),
+      keyboardType: const TextInputType.numberWithOptions(),
+      animationDuration: const Duration(milliseconds: 300),
       backgroundColor: Colors.transparent,
-      keyboardType: TextInputType.number,
       enableActiveFill: true,
-      controller: _pinTEController,
+      controller: _pinTEcontroller,
+      onCompleted: (v) {},
       appContext: context,
     );
   }
 
-  void _onTapSignInPage() {
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const SignInScreen(),
-      ),
-      (route) => false,
+  Widget _buildSigninSection() {
+    return Center(
+      child: Column(children: [
+        RichText(
+            text: TextSpan(
+                style: TextStyle(
+                  color: Colors.black.withOpacity(0.8),
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 0.4,
+                ),
+                text: "Have an account? ",
+                children: [
+              TextSpan(
+                  text: 'Sign in',
+                  style: const TextStyle(color: AppColors.themeColor),
+                  recognizer: TapGestureRecognizer()
+                    ..onTap = () {
+                      _onTapSignInButton();
+                    })
+            ]))
+      ]),
     );
   }
 
-  void _onTapResetPasswordScreen() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const ResetPasswordScreen(),
-      ),
+  void _onTapSignInButton() {
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const SignInScreen()),
+        (route) => false);
+  }
+
+  Future<void> _onTapVerifyButton() async {
+    _recoveryPinOTPInProcess = true;
+    if (mounted) setState(() {});
+    final String OTP = _pinTEcontroller.text;
+    NetworkResponse response = await NetworkCaller.getRequest(
+      Urls.recoveryVerifyOTP(widget.userEmail, OTP),
     );
+    _recoveryPinOTPInProcess = false;
+    if (mounted) setState(() {});
+
+    if (response.inSuccess && response.responseData['status'] == 'success') {
+      debugPrint('otp ok');
+      if (mounted) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ResetPasswordScreen(
+              userEmail: widget.userEmail,
+              OTP: OTP,
+            ),
+          ),
+        );
+      }
+    } else {
+      if (mounted) {
+        showSnackBarMessage(
+            context, response.errorMessage ?? 'Failed! Try again');
+        Navigator.pop(context);
+      }
+    }
   }
 
   @override
   void dispose() {
-    _pinTEController.dispose();
-
     super.dispose();
+    _pinTEcontroller.dispose();
   }
 }
