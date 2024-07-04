@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:taskmanager/ui/controllers/auth_controlres.dart';
 import 'package:taskmanager/ui/screens/sign_in_screen.dart';
@@ -19,9 +21,16 @@ AppBar profileAppbar(context, [bool fromUpdateProfile = false]) {
           ),
         );
       },
-      child: const Padding(
+      child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: CircleAvatar(),
+        child: CircleAvatar(
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(50),
+            child: Image.memory(
+              base64Decode(AuthControler.userdata?.photo ?? ''),
+            ),
+          ),
+        ),
       ),
     ),
     title: GestureDetector(
