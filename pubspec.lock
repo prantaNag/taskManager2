@@ -208,6 +208,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  get:
+    dependency: "direct main"
+    description:
+      name: get
+      sha256: e4e7335ede17452b391ed3b2ede016545706c01a02292a6c97619705e7d2a85e
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.6.6"
   http:
     dependency: "direct main"
     description:
@@ -236,10 +244,10 @@ packages:
     dependency: transitive
     description:
       name: image_picker_android
-      sha256: "4161e1f843d8480d2e9025ee22411778c3c9eb7e40076dcf2da23d8242b7b51c"
+      sha256: ff39a10ab4f48f4ac70776d0494a97bf073cd2570892cd46bc8a5cac162c25db
       url: "https://pub.dev"
     source: hosted
-    version: "0.8.12+3"
+    version: "0.8.12+4"
   image_picker_for_web:
     dependency: transitive
     description:
@@ -288,22 +296,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.2.1+1"
-  image_pickers:
-    dependency: "direct main"
-    description:
-      name: image_pickers
-      sha256: "43b3098d1d0cee1bbddd919814cee83582d40842f9fc41c1af3c7174dce5a3c9"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.5+2"
-  images_picker:
-    dependency: "direct main"
-    description:
-      name: images_picker
-      sha256: cc99347a6fa93228bf92f15ce36e4474256e4af0e6c0e1f0e7e9f047adbccd5b
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.2.11"
   leak_tracker:
     dependency: transitive
     description:

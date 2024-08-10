@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:taskmanager/data/models/network_response.dart';
-import 'package:taskmanager/data/models/new_task_wrapper_model.dart';
+import 'package:get/get.dart';
+
 import 'package:taskmanager/data/models/task_model.dart';
-import 'package:taskmanager/data/networkCaller/network_caller.dart';
-import 'package:taskmanager/data/utilities/urls.dart';
+
+import 'package:taskmanager/ui/controllers/completed_task_controller.dart';
 
 import 'package:taskmanager/ui/widgets/body_list_card_menu.dart';
 import 'package:taskmanager/ui/widgets/profile_appbar.dart';
-import 'package:taskmanager/ui/widgets/prograss_indicator.dart';
+
 import 'package:taskmanager/ui/widgets/snackbar_message.dart';
 
 class CompletedTaskScreen extends StatefulWidget {
@@ -18,12 +18,19 @@ class CompletedTaskScreen extends StatefulWidget {
 }
 
 class _CompletedTaskScreenState extends State<CompletedTaskScreen> {
-  bool _getCompletedInPrograss = false;
   List<TaskModel> newTaskList = [];
   @override
   void initState() {
     super.initState();
     _getCompletedTask();
+  }
+
+  Future<void> _getCompletedTask() async {
+    bool result = await Get.find<CompletedTaskController>().getCompletedTask();
+    result
+        ? showSnackBarMessage(context, 'All completed task loaded')
+        : showSnackBarMessage(
+            context, 'Failed to fetch completed tasks. Try again');
   }
 
   @override
@@ -34,35 +41,39 @@ class _CompletedTaskScreenState extends State<CompletedTaskScreen> {
         padding: const EdgeInsets.only(top: 8, right: 8, left: 8),
         child: Expanded(
           child: RefreshIndicator(
-            onRefresh: () async => _getCompletedTask(),
-            child: Visibility(
-              visible: _getCompletedInPrograss == false,
-              replacement: const CenteredPrograssIndicator(),
-              child: ListView.builder(
-                itemCount: newTaskList.length,
-                itemBuilder: (context, index) {
-                  return TaskItem(
-                    taskModel: newTaskList[index],
-                    onUpdateTask: () {
-                      _getCompletedTask();
-                    },
-                  );
-                },
-              ),
-            ),
-          ),
+              onRefresh: () async => _getCompletedTask(),
+              child: GetBuilder<CompletedTaskController>(
+                  builder: (completedTaskController) {
+                return Visibility(
+                  visible: completedTaskController.getCompletedTaskInProcess ==
+                      false,
+                  replacement: const CircularProgressIndicator(),
+                  child: ListView.builder(
+                      itemCount:
+                          completedTaskController.completedTaskList.length,
+                      itemBuilder: (context, index) {
+                        return TaskItem(
+                          taskModel:
+                              completedTaskController.completedTaskList[index],
+                          onUpdateTask: () {
+                            _getCompletedTask();
+                          },
+                        );
+                      }),
+                );
+              })),
         ),
       ),
     );
   }
 
-  Future<void> _getCompletedTask() async {
+  /* Future<void> _getCompletedTask() async {
     _getCompletedInPrograss = true;
     if (mounted) {
       setState(() {});
     }
     NetworkResponse response = await NetworkCaller.getRequest(Urls.newTask);
-    if (response.inSuccess) {
+    if (response.isSuccess) {
       NewTaskWrapperModel newTaskWrapperModel =
           NewTaskWrapperModel.fromJson(response.responseData);
       newTaskList = newTaskWrapperModel.taskList ?? [];
@@ -74,5 +85,5 @@ class _CompletedTaskScreenState extends State<CompletedTaskScreen> {
     if (mounted) {
       setState(() {});
     }
-  }
+  } */
 }

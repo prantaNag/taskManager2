@@ -124,7 +124,7 @@ class _TaskItemState extends State<TaskItem> {
     }
     NetworkResponse response =
         await NetworkCaller.getRequest(Urls.deleteTask(widget.taskModel.sId!));
-    if (response.inSuccess) {
+    if (response.isSuccess) {
       widget.onUpdateTask();
     } else {
       showSnackBarMessage(
@@ -144,7 +144,7 @@ class _TaskItemState extends State<TaskItem> {
 
     NetworkResponse response = await NetworkCaller.getRequest(
         Urls.updateTaskStatus(widget.taskModel.sId.toString(), popupValue));
-    if (response.inSuccess) {
+    if (response.isSuccess) {
       widget.onUpdateTask();
       if (mounted) {
         showSnackBarMessage(context, 'Task Status Updated Successfully');

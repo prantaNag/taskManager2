@@ -211,7 +211,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       "photo": ""
     };
     NetworkResponse response =
-        await NetworkCaller.postRequest(Urls.registration, body: requestInput);
+        await NetworkCaller.postRequest(Urls.registration, requestInput);
     _registrationInPrograss = false;
     if (response.inSuccess) {
       _clearTextField();

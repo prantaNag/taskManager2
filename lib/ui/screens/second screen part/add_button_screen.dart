@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:taskmanager/data/models/network_response.dart';
-import 'package:taskmanager/data/networkCaller/network_caller.dart';
-import 'package:taskmanager/data/utilities/urls.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_state_manager/src/simple/get_state.dart';
+
+import 'package:taskmanager/ui/controllers/add_new_task-controller.dart';
 import 'package:taskmanager/ui/widgets/background_widget.dart';
 import 'package:taskmanager/ui/widgets/profile_appbar.dart';
-import 'package:taskmanager/ui/widgets/prograss_indicator.dart';
+
 import 'package:taskmanager/ui/widgets/snackbar_message.dart';
 
 class AddButtonScreen extends StatefulWidget {
@@ -15,12 +17,17 @@ class AddButtonScreen extends StatefulWidget {
 }
 
 class _AddButtonScreenState extends State<AddButtonScreen> {
-  final TextEditingController _titleTeController = TextEditingController();
-  final TextEditingController _descriptionTeController =
+  final TextEditingController _titleTEController = TextEditingController();
+  final TextEditingController _descriptionTEController =
       TextEditingController();
-
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  bool _addNewTaskInPrograss = false;
+
+  @override
+  void dispose() {
+    super.dispose();
+    _titleTEController.dispose();
+    _descriptionTEController.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +42,7 @@ class _AddButtonScreenState extends State<AddButtonScreen> {
               child: Column(
                 children: [
                   TextFormField(
-                    controller: _titleTeController,
+                    controller: _titleTEController,
                     decoration: const InputDecoration(
                       hintText: "Title",
                     ),
@@ -50,7 +57,7 @@ class _AddButtonScreenState extends State<AddButtonScreen> {
                     height: 8,
                   ),
                   TextFormField(
-                    controller: _descriptionTeController,
+                    controller: _descriptionTEController,
                     decoration: const InputDecoration(
                       hintText: "Description",
                     ),
@@ -65,18 +72,21 @@ class _AddButtonScreenState extends State<AddButtonScreen> {
                   const SizedBox(
                     height: 14,
                   ),
-                  Visibility(
-                    visible: _addNewTaskInPrograss == false,
-                    replacement: const CenteredPrograssIndicator(),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          _addNewTask();
-                        }
-                      },
-                      child: const Text("Add"),
-                    ),
-                  ),
+                  GetBuilder<AddNewTaskController>(
+                      builder: (addNewTaskController) {
+                    return Visibility(
+                      visible:
+                          addNewTaskController.addNewTaskInProgess == false,
+                      replacement: const CircularProgressIndicator(),
+                      child: ElevatedButton(
+                          onPressed: () {
+                            if (_formKey.currentState!.validate()) {
+                              _addNewTask();
+                            }
+                          },
+                          child: const Text('Add')),
+                    );
+                  })
                 ],
               ),
             ),
@@ -87,6 +97,14 @@ class _AddButtonScreenState extends State<AddButtonScreen> {
   }
 
   Future<void> _addNewTask() async {
+    bool result = await Get.find<AddNewTaskController>()
+        .addNewTask(_titleTEController.text.trim(), _titleTEController.text);
+    result
+        ? showSnackBarMessage(context, 'New Task Added Successfully')
+        : showSnackBarMessage(context, 'Failed to add New Task. Try again');
+  }
+
+  /* Future<void> _addNewTask() async {
     _addNewTaskInPrograss = true;
     if (mounted) {
       setState(() {});
@@ -97,7 +115,7 @@ class _AddButtonScreenState extends State<AddButtonScreen> {
       "status": "New",
     };
     NetworkResponse response =
-        await NetworkCaller.postRequest(Urls.createTask, body: requestData);
+        await NetworkCaller.postRequest(Urls.createTask, requestData);
 
     _addNewTaskInPrograss = false;
     if (mounted) {
@@ -115,17 +133,5 @@ class _AddButtonScreenState extends State<AddButtonScreen> {
         }
       }
     }
-  }
-
-  void _clearTextFields() {
-    _titleTeController.clear();
-    _descriptionTeController.clear();
-  }
-
-  @override
-  void dispose() {
-    _titleTeController.dispose();
-    _descriptionTeController.dispose();
-    super.dispose();
-  }
+  } */
 }

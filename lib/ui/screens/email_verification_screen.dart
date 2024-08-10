@@ -1,15 +1,14 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:taskmanager/data/models/network_response.dart';
-import 'package:taskmanager/data/networkCaller/network_caller.dart';
-import 'package:taskmanager/data/utilities/urls.dart';
+import 'package:get/get.dart';
+
+import 'package:taskmanager/ui/controllers/email_verification_controller.dart';
 import 'package:taskmanager/ui/screens/pin_verification_screen.dart';
 import 'package:taskmanager/ui/screens/sign_in_screen.dart';
 
 import 'package:taskmanager/ui/utility/app_colors.dart';
 import 'package:taskmanager/ui/utility/app_constans.dart';
 import 'package:taskmanager/ui/widgets/background_widget.dart';
-import 'package:taskmanager/ui/widgets/snackbar_message.dart';
 
 class EmailVerificationScreen extends StatefulWidget {
   const EmailVerificationScreen({super.key});
@@ -20,10 +19,12 @@ class EmailVerificationScreen extends StatefulWidget {
 }
 
 class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
-  final TextEditingController _emailTEController = TextEditingController();
-  bool _emailVerificationInProcess = false;
+  final TextEditingController _emailTEcontroller = TextEditingController();
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
 
+  // bool _emailVerificationInProcess = false;
+  EmailVerificationController emailVerificationController =
+      Get.find<EmailVerificationController>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,7 +51,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                   ),
                   TextFormField(
                     keyboardType: TextInputType.emailAddress,
-                    controller: _emailTEController,
+                    controller: _emailTEcontroller,
                     decoration: const InputDecoration(
                       hintText: 'Email',
                     ),
@@ -68,12 +69,14 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                     height: 14,
                   ),
                   Visibility(
-                    visible: _emailVerificationInProcess == false,
+                    visible: emailVerificationController
+                            .emailVerificationInProcess ==
+                        false,
                     replacement: const CircularProgressIndicator(),
                     child: ElevatedButton(
                       onPressed: () {
                         if (_formkey.currentState!.validate()) {
-                          _onTapPinVerificationButton();
+                          _onTapEmailVerification();
                           debugPrint('ok');
                         }
                       },
@@ -118,10 +121,11 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
   }
 
   void _onTapSignInPage() {
-    Navigator.pushAndRemoveUntil(
+    Get.offAll(() => const SignInScreen());
+    /* Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (context) => const SignInScreen()),
-        (route) => false);
+        (route) => false); */
   }
 
   /* void _onTapConfirmButton() {
@@ -135,12 +139,22 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
 
   @override
   void dispose() {
-    _emailTEController.dispose();
+    _emailTEcontroller.dispose();
 
     super.dispose();
   }
 
-  Future<void> _onTapPinVerificationButton() async {
+  Future<void> _onTapEmailVerification() async {
+    bool result = await emailVerificationController
+        .onTapEmailVerificationButton(_emailTEcontroller.text.trim());
+
+    result
+        ? Get.to(
+            PinVerificationScreen(userEmail: _emailTEcontroller.text.trim()))
+        : Get.snackbar('Messege', emailVerificationController.errorMessege);
+  }
+
+  /* Future<void> _onTapPinVerificationButton() async {
     _emailVerificationInProcess = true;
     if (mounted) setState(() {});
     String userEmail = _emailTEController!.text.trim();
@@ -148,7 +162,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
         await NetworkCaller.getRequest(Urls.recoveryEmail(userEmail));
     _emailVerificationInProcess = false;
     if (mounted) setState(() {});
-    if (response.inSuccess) {
+    if (response.isSuccess) {
       if (mounted) {
         Navigator.push(
           context,
@@ -165,5 +179,5 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
             response.errorMessage.toString() ?? 'Failled, please try again');
       }
     }
-  }
+  } */
 }

@@ -1,16 +1,12 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:taskmanager/data/models/network_response.dart';
-import 'package:taskmanager/data/models/user_data_model.dart';
-import 'package:taskmanager/data/networkCaller/network_caller.dart';
-import 'package:taskmanager/data/utilities/urls.dart';
+import 'package:get/get.dart';
+
 import 'package:taskmanager/ui/controllers/auth_controlres.dart';
+import 'package:taskmanager/ui/controllers/update_profile_controller.dart';
 
 import 'package:taskmanager/ui/widgets/background_widget.dart';
 import 'package:taskmanager/ui/widgets/profile_appbar.dart';
-import 'package:image_picker/image_picker.dart';
+
 import 'package:taskmanager/ui/widgets/prograss_indicator.dart';
 import 'package:taskmanager/ui/widgets/snackbar_message.dart';
 
@@ -29,8 +25,11 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   final TextEditingController _passwordTEController = TextEditingController();
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  XFile? _selectedImage;
-  bool _updateProfileInPrograss = false;
+  // XFile? _selectedImage;
+  // bool _updateProfileInPrograss = false;
+
+  UpdateProfileController updateProfileController =
+      Get.find<UpdateProfileController>();
 
   @override
   void initState() {
@@ -116,10 +115,11 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                     height: 16,
                   ),
                   Visibility(
-                    visible: _updateProfileInPrograss == false,
+                    visible:
+                        updateProfileController.updateProfileInProgess == false,
                     replacement: const CenteredPrograssIndicator(),
                     child: ElevatedButton(
-                      onPressed: _updateProfile,
+                      onPressed: onPressUpdateProfileButton,
                       child: const Icon(Icons.arrow_back_outlined),
                     ),
                   ),
@@ -132,7 +132,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     );
   }
 
-  Future<void> _updateProfile() async {
+  /* Future<void> _updateProfile() async {
     _updateProfileInPrograss = true;
     String encodePhoto = AuthControler.userdata?.photo ?? '';
     if (mounted) {
@@ -153,8 +153,8 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
       requestBody['photo'] = encodePhoto;
     }
     final NetworkResponse response =
-        await NetworkCaller.postRequest(Urls.updateProfile, body: requestBody);
-    if (response.inSuccess && response.responseData['status'] == 'success') {
+        await NetworkCaller.postRequest(Urls.updateProfile,  requestBody);
+    if (response.isSuccess && response.responseData['status'] == 'success') {
       UserModel userModel = UserModel(
         email: _emailTEController.text,
         photo: encodePhoto,
@@ -176,55 +176,55 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
         setState(() {});
       }
     }
-  }
+  } */
 
   Widget _buildPhotoPickerWidget() {
-    return GestureDetector(
-      onTap: _pickProfilePicture,
+    return Container(
+      width: double.maxFinite,
+      height: 48,
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8), color: Colors.white),
+      alignment: Alignment.centerLeft,
       child: Row(
         children: [
-          Container(
-            width: double.maxFinite,
-            height: 32,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              color: Colors.white,
-            ),
-            alignment: Alignment.bottomLeft,
+          InkWell(
+            onTap: updateProfileController.pickProfileImage,
             child: Container(
               width: 100,
               height: 48,
               decoration: const BoxDecoration(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(8),
-                  bottomLeft: Radius.circular(8),
-                ),
-                color: Colors.grey,
-              ),
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(8),
+                    bottomLeft: Radius.circular(8),
+                  ),
+                  color: Colors.grey),
               alignment: Alignment.center,
               child: const Text(
-                "Photo",
+                'Photo',
                 style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w400,
-                  color: Colors.amber,
-                ),
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white,
+                    fontSize: 16),
               ),
             ),
+          ),
+          const SizedBox(
+            width: 20,
           ),
           Expanded(
             child: Text(
-              _selectedImage?.name ?? 'No image selected',
+              updateProfileController.selectedImage?.name ??
+                  'No image selected',
               maxLines: 1,
               style: const TextStyle(overflow: TextOverflow.ellipsis),
             ),
-          ),
+          )
         ],
       ),
     );
   }
 
-  Future<void> _pickProfilePicture() async {
+  /* Future<void> _pickProfilePicture() async {
     final imagePicker = ImagePicker();
     final XFile? result =
         await imagePicker.pickImage(source: ImageSource.gallery);
@@ -234,5 +234,18 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
         setState(() {});
       }
     }
+  }
+} */
+  Future<void> onPressUpdateProfileButton() async {
+    bool result = await updateProfileController.updateProfile(
+      _emailTEController.text.trim(),
+      _firstNameTEController.text.trim(),
+      _lastNameTEController.text.trim(),
+      _mobileTEController.text.trim(),
+      _passwordTEController.text,
+    );
+    result
+        ? showSnackBarMessage(context, 'Profile updated succesfully')
+        : showSnackBarMessage(context, updateProfileController.errorMessage);
   }
 }

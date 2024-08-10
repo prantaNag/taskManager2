@@ -154,10 +154,9 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
       "OTP": widget.OTP,
       "password": _confirmNewPasswordTEcontroller.text
     };
-    NetworkResponse response = await NetworkCaller.postRequest(
-        Urls.recoverResetPass,
-        body: requestData);
-    if (response.inSuccess) {
+    NetworkResponse response =
+        await NetworkCaller.postRequest(Urls.recoverResetPass, requestData);
+    if (response.isSuccess) {
       if (mounted) {
         showSnackBarMessage(context, 'Password reset successful');
         Navigator.pushAndRemoveUntil(
@@ -166,7 +165,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
             (route) => false);
       }
     } else {
-      if (response.inSuccess) {
+      if (response.isSuccess) {
         if (mounted) {
           showSnackBarMessage(
               context, response.errorMessage ?? 'Failed! Try again');

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_navigation/src/root/get_material_app.dart';
+import 'package:taskmanager/controller_binding.dart';
 import 'package:taskmanager/ui/screens/splash_screen.dart';
 import 'package:taskmanager/ui/utility/app_colors.dart';
 
@@ -14,11 +16,12 @@ class TaskManagerApp extends StatefulWidget {
 class _TaskManagerAppState extends State<TaskManagerApp> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       navigatorKey: TaskManagerApp.navigatorKey,
       debugShowCheckedModeBanner: false,
       home: const SplashScreen(),
       theme: lightThemeData(),
+      initialBinding: ControllerBinding(),
     );
   }
 

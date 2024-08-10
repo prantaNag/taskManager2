@@ -18,25 +18,26 @@ class NetworkCaller {
         final decodeData = jsonDecode(response.body);
         return NetworkResponse(
           statusCode: response.statusCode,
-          inSuccess: true,
+          isSuccess: true,
           responseData: decodeData,
         );
       } else {
         return NetworkResponse(
           statusCode: response.statusCode,
-          inSuccess: false,
+          isSuccess: false,
         );
       }
     } catch (e) {
       return NetworkResponse(
         statusCode: -1,
-        inSuccess: false,
+        isSuccess: false,
         errorMessage: e.toString(),
       );
     }
   }
 
-  static Future<NetworkResponse> postRequest(String url,
+  static Future<NetworkResponse> postRequest(
+      String url, Map<String, dynamic> requestData,
       {Map<String, dynamic>? body}) async {
     try {
       debugPrint(url);
@@ -56,25 +57,25 @@ class NetworkCaller {
         final decodeData = jsonDecode(response.body);
         return NetworkResponse(
           statusCode: response.statusCode,
-          inSuccess: true,
+          isSuccess: true,
           responseData: decodeData,
         );
       } else if (response.statusCode == 401) {
         redirectToLogIN();
         return NetworkResponse(
           statusCode: response.statusCode,
-          inSuccess: false,
+          isSuccess: false,
         );
       } else {
         return NetworkResponse(
           statusCode: response.statusCode,
-          inSuccess: false,
+          isSuccess: false,
         );
       }
     } catch (e) {
       return NetworkResponse(
         statusCode: -1,
-        inSuccess: false,
+        isSuccess: false,
         errorMessage: e.toString(),
       );
     }
